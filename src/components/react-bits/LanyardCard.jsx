@@ -18,30 +18,26 @@ import {
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 
-// replace with your own imports, see the usage snippet for details
+// Pastikan path ini sesuai dengan yang udah lu benerin sebelumnya ya bro!
 import cardGLB from "../../assets/card.glb";
-import lanyard from "../../assets/Talilanyard.png";
+import lanyard from "../../assets/TaliLanyards.png";
 
 import * as THREE from "three";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
-// 1x1 transparent pixel — lets useTexture be called unconditionally when a
-// front/back image isn't supplied.
 const BLANK_PIXEL =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
-// The card model's front face is UV-mapped to the LEFT half of the texture
-// atlas and the back face to the RIGHT half (measured from card.glb). Each
-// custom image is composited into its own half so the two faces render
-// independently, aspect-preserving (no stretching).
 const FRONT_UV_RECT = { x: 0, y: 0, w: 0.5, h: 0.755 };
 const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 
 export default function Lanyard({
-  position = [0, 0, 30],
+  // 1. Kamera ditarik maju dari 30 ke 14 biar objek terlihat jauh lebih besar
+  position = [0, 0, 14], 
   gravity = [0, -40, 0],
-  fov = 20,
+  // 2. Sudut pandang (FOV) dilebarkan sedikit
+  fov = 25, 
   transparent = true,
   frontImage = null,
   backImage = null,
@@ -60,7 +56,8 @@ export default function Lanyard({
   }, []);
 
   return (
-    <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
+    // 3. h-screen diganti dengan ukuran pasti dan ditambahkan scale-125 untuk nge-zoom ekstra di layar besar
+    <div className="relative z-0 w-full h-[500px] lg:h-[650px] flex justify-center items-center transform scale-110 lg:scale-125 origin-center cursor-grab active:cursor-grabbing">
       <Canvas
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
@@ -114,6 +111,7 @@ export default function Lanyard({
     </div>
   );
 }
+
 function Band({
   maxSpeed = 50,
   minSpeed = 0,
@@ -143,13 +141,9 @@ function Band({
   };
   const { nodes, materials } = useGLTF(cardGLB);
   const texture = useTexture(lanyardImage || lanyard);
-  // useTexture must be called unconditionally; use a blank pixel when an image
-  // isn't supplied for a given face, then skip compositing it below.
   const frontTex = useTexture(frontImage || BLANK_PIXEL);
   const backTex = useTexture(backImage || BLANK_PIXEL);
 
-  // Composite the front/back images into the card's texture atlas (front = left
-  // half, back = right half). Each image is drawn aspect-preserving (no stretch).
   const cardMap = useMemo(() => {
     const baseMap = materials.base.map;
     if (!frontImage && !backImage) return baseMap;
@@ -162,7 +156,6 @@ function Band({
     canvas.height = H;
     const ctx = canvas.getContext("2d");
     if (!ctx) return baseMap;
-    // Keep the original baked atlas for the card edges and any untouched face.
     ctx.drawImage(baseImg, 0, 0, W, H);
 
     const drawFitted = (img, rect) => {
