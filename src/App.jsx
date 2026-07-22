@@ -35,9 +35,7 @@ export default function App() {
   }, []);
 
   return (
-    // Kembali ke pondasi Black Theme
     <div className="relative bg-black min-h-screen text-white font-sans overflow-x-hidden selection:bg-emerald-500/30">
-      {/* Background Magnetic Fluid (Hanya aktif di area gelap) */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <MagneticFluid />
       </div>
@@ -56,10 +54,7 @@ export default function App() {
             <Navbar />
 
             <main>
-              {/* Hero Section (Tema Gelap) */}
               <Hero />
-
-              {/* About Section (Tema Terang, akan menutupi fluid di bawahnya) */}
               <About />
             </main>
           </motion.div>
