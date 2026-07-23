@@ -1,71 +1,119 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import GooeyNav from "../react-bits/GooeyNav";
-import StaggeredMenu from "../react-bits/StaggeredMenu";
+{/*import React, { useState, useEffect } from "react";
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Efek blur saat scroll ke bawah
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 80);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navMenu = [
-    { label: "Beranda", href: "#beranda" },
-    { label: "Tentang", href: "#tentang" },
-    { label: "Proyek", href: "#proyek" },
+  const navLinks = [
+    { name: "Beranda", href: "#beranda" },
+    { name: "Tentang", href: "#tentang" },
+    { name: "Proyek", href: "#proyek" },
+    { name: "Kontak", href: "#kontak" },
+    { name: "ID/ENG", href: "#id" }, // Link tambahan untuk bahasa Indonesia
   ];
 
   return (
-    <div className="fixed top-6 left-0 w-full z-[100] pointer-events-none transition-all duration-500">
-      <AnimatePresence mode="wait">
-        {!scrolled ? (
-          // NAVBAR FULL DI ATAS
-          <motion.div
-            key="full-nav"
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="w-full max-w-7xl mx-auto px-8 md:px-16 flex justify-end md:justify-between items-start"
+    <>
+
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 py-4"
+            : "bg-transparent py-6"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-16 flex justify-between items-center">
+          
+          <a
+            href="#beranda"
+            className="text-2xl font-black text-white tracking-tighter"
           >
-            <nav className="pointer-events-auto w-full flex items-center justify-between px-6 py-2.5 bg-zinc-950/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
-              <div className="text-xl font-black text-white tracking-tighter">
-                Anrai<span className="text-emerald-500">.</span>
-              </div>
-              <div className="hidden md:flex items-center gap-2">
-                <GooeyNav items={navMenu} />
-                <div className="flex items-center gap-4 border-l border-zinc-800/80 pl-6 ml-2">
-                  <div className="text-sm font-medium text-zinc-400 hover:text-white cursor-pointer transition-colors">
-                    🌐 ID
-                  </div>
-                  <a
-                    href="#kontak"
-                    className="px-5 py-2.5 bg-white text-zinc-950 text-sm font-bold rounded-lg hover:bg-zinc-200 transition-colors shadow-sm"
-                  >
-                    Kontak
-                  </a>
-                </div>
-              </div>
-            </nav>
-          </motion.div>
-        ) : (
-          // STAGGERED MENU SAAT SCROLL (DI DORONG MENTOK KANAN DENGAN JARAK 5PX)
-          <motion.div
-            key="staggered-menu"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            // Ganti right-[5px] jadi right-0 atau right-[-10px] di bawah ini:
-            className="absolute right-0 top-0 pointer-events-auto"
+            Anrai<span className="text-emerald-500">.</span>
+          </a>
+
+
+          <div className="hidden md:flex gap-8 items-center">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-sm font-medium text-zinc-400 hover:text-emerald-400 transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
+
+
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="md:hidden flex flex-col justify-center items-center gap-1.5 w-8 h-8 z-50"
           >
-            <StaggeredMenu items={navMenu} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            <span className="w-6 h-0.5 bg-white rounded-full"></span>
+            <span className="w-6 h-0.5 bg-white rounded-full"></span>
+            <span className="w-4 h-0.5 bg-white rounded-full self-end mr-1"></span>
+          </button>
+        </div>
+      </nav>
+
+      <div
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] transition-opacity duration-300 md:hidden ${
+          isSidebarOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+
+
+      <div
+        className={`fixed top-0 right-0 h-full w-[280px] bg-zinc-950 border-l border-zinc-800 z-[70] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col px-8 py-20 ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <button
+          onClick={() => setIsSidebarOpen(false)}
+          className="absolute top-6 right-6 text-zinc-400 hover:text-white"
+        >
+
+          <svg
+            className="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+
+        <div className="flex flex-col gap-8 mt-8">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsSidebarOpen(false)} // Tutup sidebar pas diklik
+              className="text-2xl font-bold text-zinc-300 hover:text-emerald-400 transition-colors"
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
+  */}

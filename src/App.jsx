@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Lenis from "@studio-freight/lenis"; // Engine Smooth Scroll
+import Lenis from "@studio-freight/lenis";
 
-// Import komponen lu
 import Preloader from "./components/common/Preloader";
-import Navbar from "./components/common/Navbar";
 import Hero from "./components/sections/Hero";
+import ShortIntro from "./components/sections/ShortIntro";
 import About from "./components/sections/About";
-import MagneticFluid from "./components/react-bits/MagneticFluid";
+import Projects from "./components/sections/Projects";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Setup Lenis Smooth Scroll
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -35,11 +33,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative bg-black min-h-screen text-white font-sans overflow-x-hidden selection:bg-emerald-500/30">
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <MagneticFluid />
-      </div>
-
+    <div className="relative bg-[#f5f5f5] min-h-screen text-zinc-900 font-sans overflow-x-hidden selection:bg-emerald-500/30">
       <AnimatePresence mode="wait">
         {isLoading ? (
           <Preloader key="preloader" onComplete={() => setIsLoading(false)} />
@@ -51,11 +45,14 @@ export default function App() {
             transition={{ duration: 0.8, ease: "easeInOut" }}
             className="relative z-10 flex flex-col"
           >
-            <Navbar />
-
-            <main>
+            <main className="flex flex-col w-full">
               <Hero />
+              <ShortIntro />
+
+              {/* HALAMAN ABOUT SEKARANG SUDAH PUNYA EFEK MEKAR SENDIRI! */}
               <About />
+
+              <Projects />
             </main>
           </motion.div>
         )}
